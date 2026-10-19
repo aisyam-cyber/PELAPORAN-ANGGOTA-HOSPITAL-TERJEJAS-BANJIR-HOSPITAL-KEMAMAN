@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIPAB-HKMN | Hospital Kemaman</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            kkm: { navy: '#1a365d', blue: '#2b6cb0', gold: '#d69e2e', red: '#e53e3e', green: '#38a169', orange: '#dd6b20', bg: '#f7fafc' }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-kkm-bg font-sans min-h-screen flex flex-col antialiased">
+
+  <!-- HEADER -->
+  <header class="bg-kkm-navy text-white shadow-md border-b-4 border-kkm-gold">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+      <div class="flex items-center space-x-3">
+        <div class="bg-white p-2 rounded-lg text-kkm-navy font-black text-xl shadow">HK</div>
+        <div>
+          <h1 class="text-lg font-bold leading-tight">SIPAB-HKMN</h1>
+          <p class="text-xs text-slate-300">Sistem Pemantauan & Pelaporan Anggota Terjejas Banjir — Hospital Kemaman</p>
+        </div>
+      </div>
+      <button onclick="runSetup()" class="bg-kkm-gold text-slate-900 font-bold px-3 py-1.5 rounded text-xs shadow">Setup DB</button>
+    </div>
+  </header>
+
+  <!-- KANDUNGAN UTAMA -->
+  <div class="flex-1 max-w-7xl w-full mx-auto px-4 py-6 flex flex-col md:flex-row gap-6">
+    <aside class="w-full md:w-64 bg-white rounded-xl shadow-sm p-4 border border-slate-200">
+      <nav class="space-y-1">
+        <button onclick="switchTab('dashboard')" class="w-full text-left px-3 py-2 rounded font-medium bg-kkm-navy text-white">Dashboard Utama</button>
+        <button onclick="switchTab('lapor')" class="w-full text-left px-3 py-2 rounded font-medium text-slate-700 hover:bg-slate-100">Hantar Laporan</button>
+        <button onclick="switchTab('senarai')" class="w-full text-left px-3 py-2 rounded font-medium text-slate-700 hover:bg-slate-100">Senarai Laporan</button>
+      </nav>
+    </aside>
+
+    <main class="flex-1 space-y-6">
+      <!-- MODUL DASHBOARD -->
+      <section id="modul-dashboard" class="tab-content space-y-6">
+        <h2 class="text-xl font-bold text-kkm-navy">Ringkasan Eksekutif Bencana</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="bg-white p-4 rounded-xl border shadow-sm">
+            <p class="text-xs text-slate-500">Jumlah Terjejas</p>
+            <p id="stat-terjejas" class="text-2xl font-black text-kkm-red mt-1">0</p>
+          </div>
+          <div class="bg-white p-4 rounded-xl border shadow-sm">
+            <p class="text-xs text-slate-500">Kediaman Dinaiki Air</p>
+            <p id="stat-kediaman" class="text-2xl font-black text-kkm-orange mt-1">0</p>
+          </div>
+          <div class="bg-white p-4 rounded-xl border shadow-sm">
+            <p class="text-xs text-slate-500">Memerlukan Bantuan</p>
+            <p id="stat-bantuan" class="text-2xl font-black text-kkm-gold mt-1">0</p>
+          </div>
+          <div class="bg-white p-4 rounded-xl border shadow-sm">
+            <p class="text-xs text-slate-500">Tidak Dapat Hadir</p>
+            <p id="stat-tidakhadir" class="text-2xl font-black text-slate-700 mt-1">0</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- MODUL BORANG LAPORAN -->
+      <section id="modul-lapor" class="tab-content hidden">
+        <div class="bg-white p-6 rounded-xl border shadow-sm max-w-2xl mx-auto">
+          <h2 class="text-lg font-bold text-kkm-navy border-b pb-3 mb-4">Borang Pelaporan Anggota Terjejas Banjir</h2>
+          <form onsubmit="handleFormSubmit(event)" class="space-y-4 text-xs">
+            <div>
+              <label class="block font-semibold mb-1">Nama Penuh Anggota *</label>
+              <input type="text" id="namaAnggota" required class="w-full p-2.5 border rounded-lg">
+            </div>
+            <div>
+              <label class="block font-semibold mb-1">Jabatan / Unit *</label>
+              <select id="jabatanUnit" required class="w-full p-2.5 border rounded-lg bg-white">
+                <option value="">-- Pilih Jabatan / Unit --</option>
+                <option value="Jabatan Kecemasan & Trauma">Jabatan Kecemasan & Trauma</option>
+                <option value="Unit Kejururawatan">Unit Kejururawatan</option>
+                <option value="Jabatan Farmasi">Jabatan Farmasi</option>
+                <option value="Jabatan Patologi">Jabatan Patologi</option>
+                <option value="Unit Pengurusan & Pentadbiran">Unit Pengurusan & Pentadbiran</option>
+              </select>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block font-semibold mb-1">Status Keselamatan *</label>
+                <select id="statusKeselamatan" required class="w-full p-2.5 border rounded-lg bg-white">
+                  <option value="Selamat">Selamat</option>
+                  <option value="Selamat tetapi terjejas">Selamat tetapi terjejas</option>
+                  <option value="Memerlukan bantuan">Memerlukan bantuan</option>
+                </select>
+              </div>
+              <div>
+                <label class="block font-semibold mb-1">Status Kediaman *</label>
+                <select id="statusKediaman" required class="w-full p-2.5 border rounded-lg bg-white">
+                  <option value="Tidak terjejas">Tidak terjejas</option>
+                  <option value="Kediaman dimasuki air">Kediaman dimasuki air</option>
+                  <option value="Terpaksa berpindah">Terpaksa berpindah</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="block font-semibold mb-1">Keupayaan Bertugas *</label>
+              <select id="keupayaanBertugas" required class="w-full p-2.5 border rounded-lg bg-white">
+                <option value="Boleh hadir seperti biasa">Boleh hadir seperti biasa</option>
+                <option value="Tidak dapat hadir buat sementara waktu">Tidak dapat hadir buat sementara waktu</option>
+              </select>
+            </div>
+            <button type="submit" id="btnSubmit" class="w-full bg-kkm-navy text-white font-bold py-3 rounded-lg">Hantar Laporan</button>
+          </form>
+        </div>
+      </section>
+
+      <!-- MODUL SENARAI -->
+      <section id="modul-senarai" class="tab-content hidden">
+        <div class="bg-white rounded-xl border shadow-sm p-4 overflow-x-auto">
+          <table class="w-full text-xs text-left">
+            <thead class="bg-slate-100 uppercase">
+              <tr>
+                <th class="p-2">ID</th>
+                <th class="p-2">Nama</th>
+                <th class="p-2">Jabatan</th>
+                <th class="p-2">Keselamatan</th>
+              </tr>
+            </thead>
+            <tbody id="fullReportTable"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- SCRIPT CONNECTIVITY TO GAS -->
+  <script>
+    // --------------------------------------------------------------------------------
+    // TAMPAL URL WEB APP GOOGLE APPS SCRIPT ANDA DI SINI
+    // --------------------------------------------------------------------------------
+    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbxbcCbEM5-LrC5G9AUS7AtDrQuj5wHd73C-DLODG_12K-uB7JvUc6RkqhshVPA7E5Zr/exec";
+
+    window.onload = function() {
+      loadDashboard();
+    };
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.getElementById(`modul-${tabId}`).classList.remove('hidden');
+      if (tabId === 'dashboard') loadDashboard();
+      if (tabId === 'senarai') loadReportData();
+    }
+
+    function loadDashboard() {
+      fetch(`${API_URL}?action=getDashboard`)
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById('stat-terjejas').innerText = data.stats.terjejas;
+          document.getElementById('stat-kediaman').innerText = data.stats.kediamanDinaikiAir;
+          document.getElementById('stat-bantuan').innerText = data.stats.memerlukanBantuan;
+          document.getElementById('stat-tidakhadir').innerText = data.stats.tidakBolehBertugas;
+        });
+    }
+
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btnSubmit');
+      btn.disabled = true;
+      btn.innerText = "Menghantar...";
+
+      const payload = {
+        action: "submitReport",
+        payload: {
+          namaAnggota: document.getElementById('namaAnggota').value,
+          jabatanUnit: document.getElementById('jabatanUnit').value,
+          statusKeselamatan: document.getElementById('statusKeselamatan').value,
+          statusKediaman: document.getElementById('statusKediaman').value,
+          keupayaanBertugas: document.getElementById('keupayaanBertugas').value
+        }
+      };
+
+      fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.json())
+      .then(res => {
+        btn.disabled = false;
+        btn.innerText = "Hantar Laporan";
+        alert(res.message);
+        switchTab('dashboard');
+      });
+    }
+
+    function loadReportData() {
+      fetch(`${API_URL}?action=getReports`)
+        .then(res => res.json())
+        .then(data => {
+          const tbody = document.getElementById('fullReportTable');
+          tbody.innerHTML = data.map(r => `
+            <tr class="border-b">
+              <td class="p-2 font-bold">${r.ID_Laporan}</td>
+              <td class="p-2">${r.Nama_Anggota}</td>
+              <td class="p-2">${r.Jabatan_Unit}</td>
+              <td class="p-2">${r.Status_Keselamatan}</td>
+            </tr>
+          `).join('');
+        });
+    }
+
+    function runSetup() {
+      fetch(`${API_URL}?action=setupDB`)
+        .then(res => res.json())
+        .then(res => alert(res.message));
+    }
+  </script>
+</body>
+</html>
