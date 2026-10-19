@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SIPAB-HKMN | Hospital Kemaman</title>
+  <title>SIPAB-HKMN | Bilik Gerakan Bencana Hospital Kemaman</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -21,17 +21,22 @@
 </head>
 <body class="bg-kkm-bg font-sans min-h-screen flex flex-col antialiased">
 
-  <!-- HEADER BILIK GERAKAN -->
+  <!-- HEADER BILIK GERAKAN BENCANA DAERAH -->
   <header class="bg-kkm-navy text-white shadow-md border-b-4 border-kkm-gold">
     <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
       <div class="flex items-center space-x-3">
         <div class="bg-white p-2 rounded-lg text-kkm-navy font-black text-xl shadow">HK</div>
         <div>
           <h1 class="text-lg font-bold leading-tight">SIPAB-HKMN</h1>
-          <p class="text-xs text-slate-300">Bilik Gerakan Bencana — Hospital Kemaman, KKM</p>
+          <p class="text-xs text-slate-300">Bilik Gerakan Bencana Banjir — Hospital Kemaman, KKM</p>
         </div>
       </div>
-      <button onclick="runSetup()" class="bg-kkm-gold text-slate-900 font-bold px-3 py-1.5 rounded text-xs shadow">Setup DB</button>
+      <div class="flex items-center space-x-2">
+        <span class="hidden md:inline-block bg-red-600 text-white text-xxs font-black uppercase px-2.5 py-1 rounded-full animate-pulse">
+          <i class="fa-solid fa-triangle-exclamation mr-1"></i> Mod Operasi Bencana
+        </span>
+        <button onclick="runSetup()" class="bg-kkm-gold text-slate-900 font-bold px-3 py-1.5 rounded text-xs shadow">Setup DB</button>
+      </div>
     </div>
   </header>
 
@@ -39,62 +44,93 @@
   <div class="flex-1 max-w-7xl w-full mx-auto px-4 py-6 flex flex-col md:flex-row gap-6">
     <aside class="w-full md:w-64 bg-white rounded-xl shadow-sm p-4 border border-slate-200">
       <nav class="space-y-1">
-        <button onclick="switchTab('dashboard')" class="w-full text-left px-3 py-2 rounded font-medium bg-kkm-navy text-white">Ringkasan Bilik Gerakan</button>
-        <button onclick="switchTab('lapor')" class="w-full text-left px-3 py-2 rounded font-medium text-slate-700 hover:bg-slate-100">Hantar Laporan Keadaan</button>
-        <button onclick="switchTab('senarai')" class="w-full text-left px-3 py-2 rounded font-medium text-slate-700 hover:bg-slate-100">Senarai Laporan Anggota</button>
+        <button onclick="switchTab('dashboard')" class="w-full text-left px-3 py-2 rounded font-medium bg-kkm-navy text-white">
+          <i class="fa-solid fa-gauge-high mr-2"></i>Ringkasan Bilik Gerakan
+        </button>
+        <button onclick="switchTab('lapor')" class="w-full text-left px-3 py-2 rounded font-medium text-slate-700 hover:bg-slate-100">
+          <i class="fa-solid fa-clipboard-user mr-2"></i>Borang Pelaporan Anggota
+        </button>
+        <button onclick="switchTab('senarai')" class="w-full text-left px-3 py-2 rounded font-medium text-slate-700 hover:bg-slate-100">
+          <i class="fa-solid fa-list-check mr-2"></i>Senarai Laporan Anggota
+        </button>
       </nav>
     </aside>
 
     <main class="flex-1 space-y-6">
       
-      <!-- MODUL RINGKASAN EKSEKUTIF BILIK GERAKAN BANJIR -->
+      <!-- MODUL DASHBOARD STANDARD BILIK GERAKAN BENCANA DAERAH -->
       <section id="modul-dashboard" class="tab-content space-y-6">
         
+        <!-- TAJUK & STATUS MASA NYATA -->
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center bg-white p-4 rounded-xl border border-slate-200 shadow-sm gap-2">
           <div>
-            <h2 class="text-lg font-bold text-kkm-navy">RINGKASAN EKSEKUTIF BENCANA BANJIR</h2>
-            <p class="text-xs text-slate-500">Laporan Status Anggota & Kesiapsiagaan Perkhidmatan Hospital Kemaman</p>
+            <h2 class="text-lg font-bold text-kkm-navy">DASHBOARD PEMANTAUAN BENCANA BANJIR DAERAH</h2>
+            <p class="text-xs text-slate-500">Kedudukan Sumber Manusia & Kesiapsiagaan Sektor Hospital Kemaman</p>
           </div>
           <div class="text-right text-xs">
             <span id="lastUpdatedTag" class="bg-slate-100 px-3 py-1 rounded font-mono border">Kemaskini: -</span>
           </div>
         </div>
 
-        <!-- KPI / METRIK BILIK GERAKAN -->
+        <!-- METRIK UTAMA BILIK GERAKAN -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-            <p class="text-xs font-semibold text-slate-500">Jumlah Laporan</p>
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm border-l-4 border-l-kkm-navy">
+            <p class="text-xs font-semibold text-slate-500">Jumlah Laporan Diterima</p>
             <p id="stat-total" class="text-2xl font-black text-kkm-navy mt-1">0</p>
           </div>
-          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-            <p class="text-xs font-semibold text-slate-500">Anggota Terjejas</p>
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm border-l-4 border-l-kkm-red">
+            <p class="text-xs font-semibold text-slate-500">Anggota Terjejas Banjir</p>
             <p id="stat-terjejas" class="text-2xl font-black text-kkm-red mt-1">0</p>
           </div>
-          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-            <p class="text-xs font-semibold text-slate-500">Memerlukan Bantuan Logistik</p>
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm border-l-4 border-l-kkm-gold">
+            <p class="text-xs font-semibold text-slate-500">Perlu Bantuan Logistik/PPS</p>
             <p id="stat-bantuan" class="text-2xl font-black text-kkm-gold mt-1">0</p>
           </div>
-          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm border-l-4 border-l-kkm-orange">
             <p class="text-xs font-semibold text-slate-500">Tidak Dapat Hadir Bertugas</p>
             <p id="stat-tidakhadir" class="text-2xl font-black text-kkm-orange mt-1">0</p>
           </div>
         </div>
 
-        <!-- PAPARAN STANDARD BILIK GERAKAN: PECAHAN MENGIKUT TEMPAT BERTUGAS (JABATAN/UNIT) -->
+        <!-- INDIKATOR IMPAK LOGISTIK & INFRASTRUKTUR -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="bg-amber-50 border border-amber-200 p-3.5 rounded-xl flex items-center space-x-3">
+            <div class="p-2.5 bg-amber-500 text-white rounded-lg"><i class="fa-solid fa-truck-monster text-lg"></i></div>
+            <div>
+              <p class="text-xs text-amber-800 font-semibold">Memerlukan Pengangkutan</p>
+              <p id="stat-pengangkutan" class="text-lg font-black text-amber-900">0 Anggota</p>
+            </div>
+          </div>
+          <div class="bg-red-50 border border-red-200 p-3.5 rounded-xl flex items-center space-x-3">
+            <div class="p-2.5 bg-red-600 text-white rounded-lg"><i class="fa-solid fa-house-flood-water text-lg"></i></div>
+            <div>
+              <p class="text-xs text-red-800 font-semibold">Berpindah ke PPS / Penempatan</p>
+              <p id="stat-pps" class="text-lg font-black text-red-900">0 Anggota</p>
+            </div>
+          </div>
+          <div class="bg-blue-50 border border-blue-200 p-3.5 rounded-xl flex items-center space-x-3">
+            <div class="p-2.5 bg-blue-600 text-white rounded-lg"><i class="fa-solid fa-road-barrier text-lg"></i></div>
+            <div>
+              <p class="text-xs text-blue-800 font-semibold">Laluan Perjalanan Terputus</p>
+              <p id="stat-laluan" class="text-lg font-black text-blue-900">0 Kes</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- JADUAL PECAHAN MENGIKUT TEMPAT BERTUGAS (SEKTOR/JABATAN/UNIT) -->
         <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
-          <div class="flex justify-between items-center mb-3">
+          <div class="flex justify-between items-center mb-3 border-b pb-2">
             <h3 class="text-sm font-bold text-kkm-navy uppercase tracking-wide">
-              <i class="fa-solid fa-hospital-user mr-2"></i>Pecahan Kedudukan Anggota Mengikut Tempat Bertugas (Jabatan / Unit)
+              <i class="fa-solid fa-hospital-user mr-2"></i>Rumusan Kedudukan Anggota Mengikut Tempat Bertugas
             </h3>
-            <span class="text-xxs bg-blue-50 text-blue-800 font-bold px-2 py-1 rounded">Format Standard Bilik Gerakan</span>
           </div>
           <div class="overflow-x-auto">
             <table class="w-full text-xs text-left">
               <thead class="bg-slate-100 text-slate-700 uppercase border-b">
                 <tr>
                   <th class="p-2">Sektor / Tempat Bertugas</th>
-                  <th class="p-2 text-center">Jumlah Dilapor</th>
-                  <th class="p-2 text-center">Selamat</th>
+                  <th class="p-2 text-center">Jumlah Pelaporan</th>
+                  <th class="p-2 text-center text-green-700">Selamat</th>
                   <th class="p-2 text-center text-red-600">Terjejas Banjir</th>
                   <th class="p-2 text-center text-amber-600">Perlu Bantuan</th>
                   <th class="p-2 text-center text-orange-600">Tidak Dapat Hadir</th>
@@ -129,14 +165,24 @@
         </div>
       </section>
 
-      <!-- MODUL BORANG LAPORAN -->
+      <!-- MODUL BORANG LAPORAN STANDARD BILIK GERAKAN KKM -->
       <section id="modul-lapor" class="tab-content hidden">
         <div class="bg-white p-6 rounded-xl border shadow-sm max-w-2xl mx-auto">
-          <h2 class="text-lg font-bold text-kkm-navy border-b pb-3 mb-4">Borang Pelaporan Anggota Terjejas Banjir</h2>
+          <div class="border-b pb-3 mb-4">
+            <h2 class="text-lg font-bold text-kkm-navy">BORANG PELAPORAN ANGGOTA TERJEJAS BANJIR</h2>
+            <p class="text-xs text-slate-500">Bilik Gerakan Bencana Hospital Kemaman (KKM)</p>
+          </div>
           <form onsubmit="handleFormSubmit(event)" class="space-y-4 text-xs">
-            <div>
-              <label class="block font-semibold mb-1">Nama Penuh Anggota *</label>
-              <input type="text" id="namaAnggota" required placeholder="Masukkan nama penuh" class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-kkm-blue">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block font-semibold mb-1">Nama Penuh Anggota *</label>
+                <input type="text" id="namaAnggota" required placeholder="Nama seperti dalam kad pengenalan" class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-kkm-blue">
+              </div>
+              <div>
+                <label class="block font-semibold mb-1">No. Telefon / WhatsApp *</label>
+                <input type="text" id="noTelefon" required placeholder="Contoh: 0199887766" class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-kkm-blue">
+              </div>
             </div>
             
             <div>
@@ -181,7 +227,7 @@
                 <select id="statusKeselamatan" required class="w-full p-2.5 border rounded-lg bg-white">
                   <option value="Selamat">Selamat</option>
                   <option value="Selamat tetapi terjejas">Selamat tetapi terjejas</option>
-                  <option value="Memerlukan bantuan">Memerlukan bantuan</option>
+                  <option value="Memerlukan bantuan">Memerlukan bantuan kecemasan</option>
                   <option value="Belum dapat dihubungi">Belum dapat dihubungi</option>
                 </select>
               </div>
@@ -196,33 +242,41 @@
               </div>
             </div>
 
-            <div>
-              <label class="block font-semibold mb-1">Keupayaan Hadir Bertugas *</label>
-              <select id="keupayaanBertugas" required class="w-full p-2.5 border rounded-lg bg-white">
-                <option value="Boleh hadir seperti biasa">Boleh hadir seperti biasa</option>
-                <option value="Boleh hadir tetapi memerlukan bantuan perjalanan">Boleh hadir tetapi memerlukan bantuan perjalanan</option>
-                <option value="Boleh hadir dengan penyesuaian penugasan">Boleh hadir dengan penyesuaian penugasan</option>
-                <option value="Tidak dapat hadir buat sementara waktu">Tidak dapat hadir buat sementara waktu</option>
-              </select>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block font-semibold mb-1">Lokasi Kediaman / Taman / Mukim *</label>
+                <input type="text" id="lokasiKediaman" required placeholder="Contoh: Taman Chukai Utama, Mukim Teluk Kalong" class="w-full p-2.5 border rounded-lg">
+              </div>
+              <div>
+                <label class="block font-semibold mb-1">Keupayaan Hadir Bertugas *</label>
+                <select id="keupayaanBertugas" required class="w-full p-2.5 border rounded-lg bg-white">
+                  <option value="Boleh hadir seperti biasa">Boleh hadir seperti biasa</option>
+                  <option value="Boleh hadir tetapi memerlukan bantuan perjalanan">Boleh hadir tetapi memerlukan bantuan perjalanan</option>
+                  <option value="Boleh hadir dengan penyesuaian penugasan">Boleh hadir dengan penyesuaian penugasan</option>
+                  <option value="Tidak dapat hadir buat sementara waktu">Tidak dapat hadir buat sementara waktu</option>
+                </select>
+              </div>
             </div>
 
             <div>
-              <label class="block font-semibold mb-1">Kategori Bantuan Diperlukan</label>
+              <label class="block font-semibold mb-1">Kategori Bantuan Logistik / Bencana Diperlukan</label>
               <select id="kategoriBantuan" class="w-full p-2.5 border rounded-lg bg-white">
                 <option value="Tiada">Tiada</option>
-                <option value="Pengangkutan">Pengangkutan Logistik / Kenderaan Berat</option>
-                <option value="Laluan perjalanan alternatif">Maklumat Laluan Perjalanan Alternatif</option>
-                <option value="Penempatan sementara">Penempatan / Asrama Sementara Hospital</option>
-                <option value="Bantuan kebajikan">Bantuan Kebajikan / Makanan</option>
+                <option value="Pengangkutan Logistik / Kenderaan Berat">Pengangkutan Logistik / Kenderaan Berat Hospital</option>
+                <option value="Penempatan / Asrama Sementara">Penempatan / Asrama Sementara Hospital</option>
+                <option value="Laluan Perjalanan Alternatif">Maklumat Panduan Laluan Alternatif</option>
+                <option value="Bantuan Kebajikan / Bekalan">Bantuan Kebajikan / Bekalan Makanan</option>
               </select>
             </div>
 
             <div>
-              <label class="block font-semibold mb-1">Ringkasan Masalah / Catatan Lokasi</label>
-              <textarea id="masalahDihadapi" rows="2" placeholder="Sebutkan halangan laluan, kawasan air naik, dsb." class="w-full p-2 border rounded-lg"></textarea>
+              <label class="block font-semibold mb-1">Catatan Keadaan Laluan / Halangan / Isu Semasa</label>
+              <textarea id="masalahDihadapi" rows="2" placeholder="Nyatakan kawasan jalan terputus, paras air, atau isu bekalan elektrik/air..." class="w-full p-2 border rounded-lg"></textarea>
             </div>
 
-            <button type="submit" id="btnSubmit" class="w-full bg-kkm-navy text-white font-bold py-3 rounded-lg hover:bg-blue-900 transition">Hantar Laporan Keadaan</button>
+            <button type="submit" id="btnSubmit" class="w-full bg-kkm-navy text-white font-bold py-3 rounded-lg hover:bg-blue-900 transition">
+              <i class="fa-solid fa-paper-plane mr-2"></i>Hantar Laporan Ke Bilik Gerakan
+            </button>
           </form>
         </div>
       </section>
@@ -230,7 +284,7 @@
       <!-- MODUL SENARAI LAPORAN -->
       <section id="modul-senarai" class="tab-content hidden space-y-4">
         <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex justify-between items-center">
-          <input type="text" id="searchReport" onkeyup="renderReportTable()" placeholder="Cari Nama / ID / Tempat Bertugas..." class="p-2 border rounded text-xs w-64">
+          <input type="text" id="searchReport" onkeyup="renderReportTable()" placeholder="Cari Nama / Telefon / Tempat Bertugas..." class="p-2 border rounded text-xs w-64">
           <button onclick="exportCSV()" class="bg-kkm-green text-white px-3 py-2 rounded text-xs font-semibold hover:bg-green-700">Eksport CSV</button>
         </div>
         <div class="bg-white rounded-xl border shadow-sm p-4 overflow-x-auto">
@@ -240,6 +294,7 @@
                 <th class="p-3">ID</th>
                 <th class="p-3">Masa Laporan</th>
                 <th class="p-3">Nama Anggota</th>
+                <th class="p-3">No. Telefon</th>
                 <th class="p-3">Tempat Bertugas</th>
                 <th class="p-3">Status Keselamatan Anggota</th>
                 <th class="p-3">Keupayaan Hadir</th>
@@ -249,6 +304,7 @@
           </table>
         </div>
       </section>
+
     </main>
   </div>
 
@@ -257,7 +313,7 @@
     // --------------------------------------------------------------------------------
     // TAMPAL URL WEB APP GOOGLE APPS SCRIPT ANDA DI SINI
     // --------------------------------------------------------------------------------
-    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbz4Vjkpx5Ox8Xddg-gWN81QVj6wLdpHXLDByBKgnDET5fSM4OSmNgV3sw7QlzbvE7Rd/exec";
+    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbzcjntYEBCfg-wio5GcTnagV9InMpEwvr7CJ4Oo0otOok4gbia8O29-vnxy26hUOr7Z/exec";
 
     let globalReports = [];
 
@@ -280,9 +336,14 @@
           document.getElementById('stat-terjejas').innerText = data.stats.terjejas;
           document.getElementById('stat-bantuan').innerText = data.stats.memerlukanBantuan;
           document.getElementById('stat-tidakhadir').innerText = data.stats.tidakBolehBertugas;
+          
+          document.getElementById('stat-pengangkutan').innerText = `${data.stats.pengangkutan} Anggota`;
+          document.getElementById('stat-pps').innerText = `${data.stats.pps} Anggota`;
+          document.getElementById('stat-laluan').innerText = `${data.stats.laluanTerputus} Kes`;
+
           document.getElementById('lastUpdatedTag').innerText = `Kemaskini: ${data.lastUpdated}`;
 
-          // Render Jadual Pecahan Mengikut Tempat Bertugas (Format Bilik Gerakan)
+          // Render Jadual Pecahan Mengikut Tempat Bertugas
           const deptTbody = document.getElementById('tableDeptSummary');
           if (data.deptSummary && data.deptSummary.length > 0) {
             deptTbody.innerHTML = data.deptSummary.map(d => `
@@ -323,9 +384,11 @@
         action: "submitReport",
         payload: {
           namaAnggota: document.getElementById('namaAnggota').value,
+          noTelefon: document.getElementById('noTelefon').value,
           jabatanUnit: document.getElementById('jabatanUnit').value,
           statusKeselamatan: document.getElementById('statusKeselamatan').value,
           statusKediaman: document.getElementById('statusKediaman').value,
+          lokasiKediaman: document.getElementById('lokasiKediaman').value,
           keupayaanBertugas: document.getElementById('keupayaanBertugas').value,
           kategoriBantuan: document.getElementById('kategoriBantuan').value,
           masalahDihadapi: document.getElementById('masalahDihadapi').value
@@ -339,7 +402,7 @@
       .then(res => res.json())
       .then(res => {
         btn.disabled = false;
-        btn.innerText = "Hantar Laporan Keadaan";
+        btn.innerText = "Hantar Laporan Ke Bilik Gerakan";
         alert(res.message);
         document.querySelector('form').reset();
         switchTab('dashboard');
@@ -367,11 +430,12 @@
           <td class="p-3 font-mono font-bold">${r.ID_Laporan}</td>
           <td class="p-3">${r.Tarikh_Masa_Laporan}</td>
           <td class="p-3 font-semibold">${r.Nama_Anggota}</td>
+          <td class="p-3 font-mono">${r.No_Telefon || '-'}</td>
           <td class="p-3">${r.Jabatan_Unit}</td>
           <td class="p-3"><span class="px-2 py-0.5 rounded text-xxs font-bold ${r.Status_Keselamatan === 'Selamat' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">${r.Status_Keselamatan}</span></td>
           <td class="p-3">${r.Keupayaan_Bertugas}</td>
         </tr>
-      `).join('') || '<tr><td colspan="6" class="p-3 text-center">Tiada rekod dijumpai.</td></tr>';
+      `).join('') || '<tr><td colspan="7" class="p-3 text-center">Tiada rekod dijumpai.</td></tr>';
     }
 
     function exportCSV() {
