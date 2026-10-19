@@ -67,6 +67,26 @@
             <p id="stat-tidakhadir" class="text-2xl font-black text-slate-700 mt-1">0</p>
           </div>
         </div>
+
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
+          <h3 class="text-sm font-bold text-slate-700 mb-3">Laporan Terkini Diterima</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs text-left">
+              <thead class="bg-slate-100 text-slate-600 uppercase">
+                <tr>
+                  <th class="p-2">ID</th>
+                  <th class="p-2">Nama</th>
+                  <th class="p-2">Jabatan / Unit</th>
+                  <th class="p-2">Status Keselamatan Anggota</th>
+                  <th class="p-2">Keupayaan Hadir</th>
+                </tr>
+              </thead>
+              <tbody id="tableRecentReports">
+                <tr><td colspan="5" class="p-4 text-center text-slate-400">Memuatkan data...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </section>
 
       <!-- MODUL BORANG LAPORAN -->
@@ -76,59 +96,129 @@
           <form onsubmit="handleFormSubmit(event)" class="space-y-4 text-xs">
             <div>
               <label class="block font-semibold mb-1">Nama Penuh Anggota *</label>
-              <input type="text" id="namaAnggota" required class="w-full p-2.5 border rounded-lg">
+              <input type="text" id="namaAnggota" required placeholder="Masukkan nama penuh" class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-kkm-blue">
             </div>
+            
+            <!-- SENARAI JABATAN & UNIT STANDARD KKM -->
             <div>
               <label class="block font-semibold mb-1">Jabatan / Unit *</label>
-              <select id="jabatanUnit" required class="w-full p-2.5 border rounded-lg bg-white">
+              <select id="jabatanUnit" required class="w-full p-2.5 border rounded-lg bg-white focus:ring-2 focus:ring-kkm-blue">
                 <option value="">-- Pilih Jabatan / Unit --</option>
-                <option value="Jabatan Kecemasan & Trauma">Jabatan Kecemasan & Trauma</option>
-                <option value="Unit Kejururawatan">Unit Kejururawatan</option>
-                <option value="Jabatan Farmasi">Jabatan Farmasi</option>
-                <option value="Jabatan Patologi">Jabatan Patologi</option>
-                <option value="Unit Pengurusan & Pentadbiran">Unit Pengurusan & Pentadbiran</option>
+                
+                <optgroup label="PERKHIDMATAN KLINIKAL">
+                  <option value="Jabatan Kecemasan & Trauma">Jabatan Kecemasan & Trauma</option>
+                  <option value="Jabatan Perubatan Am">Jabatan Perubatan Am</option>
+                  <option value="Jabatan Pembedahan Am">Jabatan Pembedahan Am</option>
+                  <option value="Jabatan Obstetriks & Ginekologi (O&G)">Jabatan Obstetriks & Ginekologi (O&G)</option>
+                  <option value="Jabatan Paediatrik">Jabatan Paediatrik</option>
+                  <option value="Jabatan Ortopedik">Jabatan Ortopedik</option>
+                  <option value="Jabatan Anestesiologi & Rawatan Rapi (ICU/HDUI)">Jabatan Anestesiologi & Rawatan Rapi (ICU/HDUI)</option>
+                  <option value="Jabatan Oftalmologi (Mata)">Jabatan Oftalmologi (Mata)</option>
+                  <option value="Jabatan Otorinolaringologi (ENT)">Jabatan Otorinolaringologi (ENT)</option>
+                  <option value="Jabatan Psikiatri & Kesihatan Mental">Jabatan Psikiatri & Kesihatan Mental</option>
+                  <option value="Jabatan Pergigian">Jabatan Pergigian</option>
+                  <option value="Unit Kejururawatan">Unit Kejururawatan</option>
+                  <option value="Unit Dewan Bedah">Unit Dewan Bedah</option>
+                  <option value="Unit Hemodialisis">Unit Hemodialisis</option>
+                </optgroup>
+
+                <optgroup label="SOKONGAN KLINIKAL">
+                  <option value="Jabatan Farmasi & Bekalan Steril (CPS)">Jabatan Farmasi & Bekalan Steril (CPS)</option>
+                  <option value="Jabatan Patologi & Tabung Darah">Jabatan Patologi & Tabung Darah</option>
+                  <option value="Jabatan Radiologi (X-Ray/CT Scan)">Jabatan Radiologi (X-Ray/CT Scan)</option>
+                  <option value="Unit Pemulihan Perubatan (Fisioterapi)">Unit Pemulihan Perubatan (Fisioterapi)</option>
+                  <option value="Unit Pemulihan Cara Kerja">Unit Pemulihan Cara Kerja</option>
+                  <option value="Unit Dietetik & Sajian">Unit Dietetik & Sajian</option>
+                  <option value="Unit Kerja Sosial Perubatan">Unit Kerja Sosial Perubatan</option>
+                  <option value="Unit Rekod Perubatan">Unit Rekod Perubatan</option>
+                  <option value="Unit Pendidikan Kesihatan">Unit Pendidikan Kesihatan</option>
+                  <option value="Unit Kawalan Infeksi">Unit Kawalan Infeksi</option>
+                </optgroup>
+
+                <optgroup label="SOKONGAN NON-KLINIKAL & PENTADBIRAN">
+                  <option value="Unit Pengurusan & Pentadbiran">Unit Pengurusan & Pentadbiran</option>
+                  <option value="Unit Sumber Manusia">Unit Sumber Manusia</option>
+                  <option value="Unit Kewangan & Akaun">Unit Kewangan & Akaun</option>
+                  <option value="Unit Penyeliaan Hospital">Unit Penyeliaan Hospital</option>
+                  <option value="Unit Pengangkutan & Logistik">Unit Pengangkutan & Logistik</option>
+
+                  <option value="Unit Teknologi Maklumat (ICT)">Unit Teknologi Maklumat (ICT)</option>
+                  <option value="Unit Keselamatan & Kesihatan Pekerjaan (KPAS)">Unit Keselamatan & Kesihatan Pekerjaan (KPAS)</option>
+                  <option value="Unit Pembangunan & Kejuruteraan">Unit Pembangunan & Kejuruteraan</option>
+                  <option value="Unit Kualiti">Unit Kualiti</option>
+                  <option value="Lain-lain / Kontraktor Syarikat Consession">Lain-lain / Syarikat Consession (Fasiliti)</option>
+                </optgroup>
               </select>
             </div>
-            <div class="grid grid-cols-2 gap-4">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label class="block font-semibold mb-1">Status Keselamatan *</label>
+                <label class="block font-semibold mb-1">Status Keselamatan Anggota *</label>
                 <select id="statusKeselamatan" required class="w-full p-2.5 border rounded-lg bg-white">
                   <option value="Selamat">Selamat</option>
                   <option value="Selamat tetapi terjejas">Selamat tetapi terjejas</option>
                   <option value="Memerlukan bantuan">Memerlukan bantuan</option>
+                  <option value="Belum dapat dihubungi">Belum dapat dihubungi</option>
                 </select>
               </div>
               <div>
                 <label class="block font-semibold mb-1">Status Kediaman *</label>
                 <select id="statusKediaman" required class="w-full p-2.5 border rounded-lg bg-white">
                   <option value="Tidak terjejas">Tidak terjejas</option>
+                  <option value="Kawasan kediaman dinaiki air">Kawasan kediaman dinaiki air</option>
                   <option value="Kediaman dimasuki air">Kediaman dimasuki air</option>
-                  <option value="Terpaksa berpindah">Terpaksa berpindah</option>
+                  <option value="Terpaksa berpindah ke PPS / Rumah Saudara">Terpaksa berpindah ke PPS / Rumah Saudara</option>
                 </select>
               </div>
             </div>
+
             <div>
-              <label class="block font-semibold mb-1">Keupayaan Bertugas *</label>
+              <label class="block font-semibold mb-1">Keupayaan Hadir Bertugas *</label>
               <select id="keupayaanBertugas" required class="w-full p-2.5 border rounded-lg bg-white">
                 <option value="Boleh hadir seperti biasa">Boleh hadir seperti biasa</option>
+                <option value="Boleh hadir tetapi memerlukan bantuan perjalanan">Boleh hadir tetapi memerlukan bantuan perjalanan</option>
+                <option value="Boleh hadir dengan penyesuaian penugasan">Boleh hadir dengan penyesuaian penugasan</option>
                 <option value="Tidak dapat hadir buat sementara waktu">Tidak dapat hadir buat sementara waktu</option>
               </select>
             </div>
-            <button type="submit" id="btnSubmit" class="w-full bg-kkm-navy text-white font-bold py-3 rounded-lg">Hantar Laporan</button>
+
+            <div>
+              <label class="block font-semibold mb-1">Kategori Bantuan Diperlukan</label>
+              <select id="kategoriBantuan" class="w-full p-2.5 border rounded-lg bg-white">
+                <option value="Tiada">Tiada</option>
+                <option value="Pengangkutan">Pengangkutan Logistik / Kenderaan Berat</option>
+                <option value="Laluan perjalanan alternatif">Maklumat Laluan Perjalanan Alternatif</option>
+                <option value="Penempatan sementara">Penempatan / Asrama Sementara Hospital</option>
+                <option value="Bantuan kebajikan">Bantuan Kebajikan / Makanan</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block font-semibold mb-1">Ringkasan Masalah / Catatan Lokasi</label>
+              <textarea id="masalahDihadapi" rows="2" placeholder="Sebutkan halangan laluan, kawasan air naik, dsb." class="w-full p-2 border rounded-lg"></textarea>
+            </div>
+
+            <button type="submit" id="btnSubmit" class="w-full bg-kkm-navy text-white font-bold py-3 rounded-lg hover:bg-blue-900 transition">Hantar Laporan Keadaan</button>
           </form>
         </div>
       </section>
 
-      <!-- MODUL SENARAI -->
-      <section id="modul-senarai" class="tab-content hidden">
+      <!-- MODUL SENARAI LAPORAN -->
+      <section id="modul-senarai" class="tab-content hidden space-y-4">
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex justify-between items-center">
+          <input type="text" id="searchReport" onkeyup="renderReportTable()" placeholder="Cari Nama / ID..." class="p-2 border rounded text-xs w-64">
+          <button onclick="exportCSV()" class="bg-kkm-green text-white px-3 py-2 rounded text-xs font-semibold hover:bg-green-700">Eksport CSV</button>
+        </div>
         <div class="bg-white rounded-xl border shadow-sm p-4 overflow-x-auto">
           <table class="w-full text-xs text-left">
-            <thead class="bg-slate-100 uppercase">
+            <thead class="bg-slate-100 uppercase border-b">
               <tr>
-                <th class="p-2">ID</th>
-                <th class="p-2">Nama</th>
-                <th class="p-2">Jabatan</th>
-                <th class="p-2">Keselamatan</th>
+                <th class="p-3">ID</th>
+                <th class="p-3">Masa Laporan</th>
+                <th class="p-3">Nama Anggota</th>
+                <th class="p-3">Jabatan / Unit</th>
+                <th class="p-3">Status Keselamatan Anggota</th>
+                <th class="p-3">Keupayaan Hadir</th>
               </tr>
             </thead>
             <tbody id="fullReportTable"></tbody>
@@ -138,12 +228,14 @@
     </main>
   </div>
 
-  <!-- SCRIPT CONNECTIVITY TO GAS -->
+  <!-- SCRIPT INTEGRASI KHAS GITHUB PAGES TO APPS SCRIPT -->
   <script>
     // --------------------------------------------------------------------------------
     // TAMPAL URL WEB APP GOOGLE APPS SCRIPT ANDA DI SINI
     // --------------------------------------------------------------------------------
-    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbxbcCbEM5-LrC5G9AUS7AtDrQuj5wHd73C-DLODG_12K-uB7JvUc6RkqhshVPA7E5Zr/exec";
+    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbwzo5fbR240qL69ThxeycxBeAuOkF_BOk8hoC-5sRHfxBhfUYvZjX3if1t1FcHnEWrL/exec";
+
+    let globalReports = [];
 
     window.onload = function() {
       loadDashboard();
@@ -164,6 +256,17 @@
           document.getElementById('stat-kediaman').innerText = data.stats.kediamanDinaikiAir;
           document.getElementById('stat-bantuan').innerText = data.stats.memerlukanBantuan;
           document.getElementById('stat-tidakhadir').innerText = data.stats.tidakBolehBertugas;
+
+          const tbody = document.getElementById('tableRecentReports');
+          tbody.innerHTML = data.recentReports.map(r => `
+            <tr class="border-b hover:bg-slate-50">
+              <td class="p-2 font-mono font-bold">${r.ID_Laporan}</td>
+              <td class="p-2 font-semibold">${r.Nama_Anggota}</td>
+              <td class="p-2">${r.Jabatan_Unit}</td>
+              <td class="p-2"><span class="px-2 py-0.5 rounded text-xxs font-bold ${r.Status_Keselamatan === 'Selamat' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">${r.Status_Keselamatan}</span></td>
+              <td class="p-2">${r.Keupayaan_Bertugas}</td>
+            </tr>
+          `).join('') || '<tr><td colspan="5" class="p-2 text-center">Tiada rekod.</td></tr>';
         });
     }
 
@@ -180,7 +283,9 @@
           jabatanUnit: document.getElementById('jabatanUnit').value,
           statusKeselamatan: document.getElementById('statusKeselamatan').value,
           statusKediaman: document.getElementById('statusKediaman').value,
-          keupayaanBertugas: document.getElementById('keupayaanBertugas').value
+          keupayaanBertugas: document.getElementById('keupayaanBertugas').value,
+          kategoriBantuan: document.getElementById('kategoriBantuan').value,
+          masalahDihadapi: document.getElementById('masalahDihadapi').value
         }
       };
 
@@ -191,8 +296,9 @@
       .then(res => res.json())
       .then(res => {
         btn.disabled = false;
-        btn.innerText = "Hantar Laporan";
+        btn.innerText = "Hantar Laporan Keadaan";
         alert(res.message);
+        document.querySelector('form').reset();
         switchTab('dashboard');
       });
     }
@@ -201,16 +307,43 @@
       fetch(`${API_URL}?action=getReports`)
         .then(res => res.json())
         .then(data => {
-          const tbody = document.getElementById('fullReportTable');
-          tbody.innerHTML = data.map(r => `
-            <tr class="border-b">
-              <td class="p-2 font-bold">${r.ID_Laporan}</td>
-              <td class="p-2">${r.Nama_Anggota}</td>
-              <td class="p-2">${r.Jabatan_Unit}</td>
-              <td class="p-2">${r.Status_Keselamatan}</td>
-            </tr>
-          `).join('');
+          globalReports = data;
+          renderReportTable();
         });
+    }
+
+    function renderReportTable() {
+      const q = document.getElementById('searchReport').value.toLowerCase();
+      const tbody = document.getElementById('fullReportTable');
+      const filtered = globalReports.filter(r => 
+        r.Nama_Anggota.toLowerCase().includes(q) || r.ID_Laporan.toLowerCase().includes(q) || r.Jabatan_Unit.toLowerCase().includes(q)
+      );
+
+      tbody.innerHTML = filtered.map(r => `
+        <tr class="border-b hover:bg-slate-50">
+          <td class="p-3 font-mono font-bold">${r.ID_Laporan}</td>
+          <td class="p-3">${r.Tarikh_Masa_Laporan}</td>
+          <td class="p-3 font-semibold">${r.Nama_Anggota}</td>
+          <td class="p-3">${r.Jabatan_Unit}</td>
+          <td class="p-3"><span class="px-2 py-0.5 rounded text-xxs font-bold ${r.Status_Keselamatan === 'Selamat' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">${r.Status_Keselamatan}</span></td>
+          <td class="p-3">${r.Keupayaan_Bertugas}</td>
+        </tr>
+      `).join('') || '<tr><td colspan="6" class="p-3 text-center">Tiada rekod dijumpai.</td></tr>';
+    }
+
+    function exportCSV() {
+      if (globalReports.length === 0) return alert("Tiada data untuk dieksport.");
+      let csvContent = "data:text/csv;charset=utf-8,";
+      csvContent += Object.keys(globalReports[0]).join(",") + "\n";
+      globalReports.forEach(r => {
+        csvContent += Object.values(r).map(v => `"${v}"`).join(",") + "\n";
+      });
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `Laporan_Banjir_SIPAB_HKMN_${Date.now()}.csv`);
+      document.body.appendChild(link);
+      link.click();
     }
 
     function runSetup() {
