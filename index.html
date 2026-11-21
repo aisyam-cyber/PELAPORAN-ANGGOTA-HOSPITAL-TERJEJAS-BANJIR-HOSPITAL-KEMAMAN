@@ -191,7 +191,7 @@
               </div>
               <div>
                 <label class="block font-semibold mb-1">No. Telefon / WhatsApp *</label>
-                <input type="text" id="noTelefon" required placeholder="Contoh: 0199887766" class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-kkm-blue">
+                <input type="tel" id="noTelefon" required placeholder="Contoh: 0199887766" class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-kkm-blue">
               </div>
             </div>
             
@@ -334,7 +334,7 @@
     // --------------------------------------------------------------------------------
     // TAMPAL URL WEB APP GOOGLE APPS SCRIPT ANDA DI SINI
     // --------------------------------------------------------------------------------
-    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbwpvPAQU7LlZhd0nLBEcaHbsxKmTNMxth9YNS69QCU_F4uyJ042SbPFXhLEyFB1fhrr/exec";
+    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbyVxd9m1Fw4O40j89mRIAi_BEZXuw-tYn684loMZgxRPHBcEBFLp_8Peuk6W9CGvX6M/exec";
 
     let globalReports = [];
     let adminPinSemasa = "";
@@ -513,7 +513,10 @@
       const q = document.getElementById('searchReport').value.toLowerCase();
       const tbody = document.getElementById('fullReportTable');
       const filtered = globalReports.filter(r => 
-        r.Nama_Anggota.toLowerCase().includes(q) || r.ID_Laporan.toLowerCase().includes(q) || r.Jabatan_Unit.toLowerCase().includes(q) || (r.No_Telefon && r.No_Telefon.includes(q))
+        String(r.Nama_Anggota).toLowerCase().includes(q) || 
+        String(r.ID_Laporan).toLowerCase().includes(q) || 
+        String(r.Jabatan_Unit).toLowerCase().includes(q) || 
+        (r.No_Telefon && String(r.No_Telefon).includes(q))
       );
 
       tbody.innerHTML = filtered.map(r => `
