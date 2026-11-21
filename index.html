@@ -35,7 +35,14 @@
         <span class="hidden md:inline-block bg-red-600 text-white text-xxs font-black uppercase px-2.5 py-1 rounded-full animate-pulse">
           <i class="fa-solid fa-triangle-exclamation mr-1"></i> Mod Operasi Bencana
         </span>
-        <button onclick="runSetup()" class="bg-kkm-gold text-slate-900 font-bold px-3 py-1.5 rounded text-xs shadow">Setup DB</button>
+        <!-- Butang Setup DB tersembunyi secara lalai untuk keselamatan -->
+        <button id="btnSetupDB" onclick="runSetup()" class="hidden bg-kkm-gold text-slate-900 font-bold px-3 py-1.5 rounded text-xs shadow hover:bg-yellow-500 transition">
+          <i class="fa-solid fa-gears mr-1"></i> Setup DB
+        </button>
+        <!-- Ikon kunci pentadbir -->
+        <button id="btnAdminLogin" onclick="aktifkanModPentadbir()" title="Akses Pentadbir" class="text-slate-300 hover:text-white px-2 py-1 text-xs">
+          <i class="fa-solid fa-lock"></i>
+        </button>
       </div>
     </div>
   </header>
@@ -44,13 +51,13 @@
   <div class="flex-1 max-w-7xl w-full mx-auto px-4 py-6 flex flex-col md:flex-row gap-6">
     <aside class="w-full md:w-64 bg-white rounded-xl shadow-sm p-4 border border-slate-200">
       <nav class="space-y-1">
-        <button onclick="switchTab('dashboard')" class="w-full text-left px-3 py-2 rounded font-medium bg-kkm-navy text-white">
+        <button onclick="switchTab('dashboard')" id="btn-dashboard" class="nav-btn w-full text-left px-3 py-2.5 rounded font-medium bg-kkm-navy text-white">
           <i class="fa-solid fa-gauge-high mr-2"></i>Ringkasan Bilik Gerakan
         </button>
-        <button onclick="switchTab('lapor')" class="w-full text-left px-3 py-2 rounded font-medium text-slate-700 hover:bg-slate-100">
+        <button onclick="switchTab('lapor')" id="btn-lapor" class="nav-btn w-full text-left px-3 py-2.5 rounded font-medium text-slate-700 hover:bg-slate-100">
           <i class="fa-solid fa-clipboard-user mr-2"></i>Borang Pelaporan Anggota
         </button>
-        <button onclick="switchTab('senarai')" class="w-full text-left px-3 py-2 rounded font-medium text-slate-700 hover:bg-slate-100">
+        <button onclick="switchTab('senarai')" id="btn-senarai" class="nav-btn w-full text-left px-3 py-2.5 rounded font-medium text-slate-700 hover:bg-slate-100">
           <i class="fa-solid fa-list-check mr-2"></i>Senarai Laporan Anggota
         </button>
       </nav>
@@ -189,6 +196,7 @@
               <label class="block font-semibold mb-1">Tempat Bertugas (Jabatan / Unit) *</label>
               <select id="jabatanUnit" required class="w-full p-2.5 border rounded-lg bg-white focus:ring-2 focus:ring-kkm-blue">
                 <option value="">-- Pilih Tempat Bertugas --</option>
+                
                 <optgroup label="PERKHIDMATAN KLINIKAL">
                   <option value="Jabatan Kecemasan & Trauma">Jabatan Kecemasan & Trauma</option>
                   <option value="Jabatan Perubatan Am">Jabatan Perubatan Am</option>
@@ -201,14 +209,17 @@
                   <option value="Unit Dewan Bedah">Unit Dewan Bedah</option>
                   <option value="Unit Hemodialisis">Unit Hemodialisis</option>
                 </optgroup>
+
                 <optgroup label="SOKONGAN KLINIKAL">
                   <option value="Jabatan Farmasi & Bekalan Steril (CPS)">Jabatan Farmasi & Bekalan Steril (CPS)</option>
                   <option value="Jabatan Patologi & Tabung Darah">Jabatan Patologi & Tabung Darah</option>
+                  <option value="Unit Perubatan Forensik">Unit Perubatan Forensik</option>
                   <option value="Jabatan Radiologi (X-Ray/CT Scan)">Jabatan Radiologi (X-Ray/CT Scan)</option>
                   <option value="Unit Pemulihan Perubatan (Fisioterapi)">Unit Pemulihan Perubatan (Fisioterapi)</option>
                   <option value="Unit Dietetik & Sajian">Unit Dietetik & Sajian</option>
                   <option value="Unit Rekod Perubatan">Unit Rekod Perubatan</option>
                 </optgroup>
+
                 <optgroup label="SOKONGAN NON-KLINIKAL & PENTADBIRAN">
                   <option value="Unit Pengurusan & Pentadbiran">Unit Pengurusan & Pentadbiran</option>
                   <option value="Unit Kewangan & Akaun">Unit Kewangan & Akaun</option>
@@ -313,17 +324,62 @@
     // --------------------------------------------------------------------------------
     // TAMPAL URL WEB APP GOOGLE APPS SCRIPT ANDA DI SINI
     // --------------------------------------------------------------------------------
-    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbzcjntYEBCfg-wio5GcTnagV9InMpEwvr7CJ4Oo0otOok4gbia8O29-vnxy26hUOr7Z/exec";
+    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbwpvPAQU7LlZhd0nLBEcaHbsxKmTNMxth9YNS69QCU_F4uyJ042SbPFXhLEyFB1fhrr/exec";
 
     let globalReports = [];
+    let adminPinSemasa = "";
 
     window.onload = function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('mod') === 'admin') {
+        document.getElementById('btnSetupDB').classList.remove('hidden');
+      }
       loadDashboard();
     };
 
+    function aktifkanModPentadbir() {
+      const pin = prompt("Masukkan PIN Pentadbir Bilik Gerakan:");
+      if (pin) {
+        adminPinSemasa = pin;
+        document.getElementById('btnSetupDB').classList.remove('hidden');
+        document.getElementById('btnAdminLogin').classList.add('hidden');
+        alert("Mod Pentadbir diaktifkan. Butang Setup DB kini dipaparkan.");
+      }
+    }
+
+    function runSetup() {
+      if (!adminPinSemasa) {
+        adminPinSemasa = prompt("Sahkan PIN Pentadbir untuk meneruskan Setup DB:");
+      }
+      if (!adminPinSemasa) return;
+
+      fetch(`${API_URL}?action=setupDB&pin=${encodeURIComponent(adminPinSemasa)}`)
+        .then(res => res.json())
+        .then(res => {
+          alert(res.message);
+          if (!res.success) {
+            adminPinSemasa = "";
+            document.getElementById('btnSetupDB').classList.add('hidden');
+            document.getElementById('btnAdminLogin').classList.remove('hidden');
+          }
+        })
+        .catch(err => alert("Ralat sambungan pelayan: " + err));
+    }
+
     function switchTab(tabId) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('bg-kkm-navy', 'text-white');
+        btn.classList.add('text-slate-700');
+      });
+
       document.getElementById(`modul-${tabId}`).classList.remove('hidden');
+      const activeBtn = document.getElementById(`btn-${tabId}`);
+      if (activeBtn) {
+        activeBtn.classList.add('bg-kkm-navy', 'text-white');
+        activeBtn.classList.remove('text-slate-700');
+      }
+
       if (tabId === 'dashboard') loadDashboard();
       if (tabId === 'senarai') loadReportData();
     }
@@ -406,6 +462,11 @@
         alert(res.message);
         document.querySelector('form').reset();
         switchTab('dashboard');
+      })
+      .catch(err => {
+        btn.disabled = false;
+        btn.innerText = "Hantar Laporan Ke Bilik Gerakan";
+        alert("Gagal menghantar laporan. Sila semak sambungan internet.");
       });
     }
 
@@ -422,7 +483,7 @@
       const q = document.getElementById('searchReport').value.toLowerCase();
       const tbody = document.getElementById('fullReportTable');
       const filtered = globalReports.filter(r => 
-        r.Nama_Anggota.toLowerCase().includes(q) || r.ID_Laporan.toLowerCase().includes(q) || r.Jabatan_Unit.toLowerCase().includes(q)
+        r.Nama_Anggota.toLowerCase().includes(q) || r.ID_Laporan.toLowerCase().includes(q) || r.Jabatan_Unit.toLowerCase().includes(q) || (r.No_Telefon && r.No_Telefon.includes(q))
       );
 
       tbody.innerHTML = filtered.map(r => `
@@ -451,12 +512,6 @@
       link.setAttribute("download", `Laporan_Banjir_SIPAB_HKMN_${Date.now()}.csv`);
       document.body.appendChild(link);
       link.click();
-    }
-
-    function runSetup() {
-      fetch(`${API_URL}?action=setupDB`)
-        .then(res => res.json())
-        .then(res => alert(res.message));
     }
   </script>
 </body>
