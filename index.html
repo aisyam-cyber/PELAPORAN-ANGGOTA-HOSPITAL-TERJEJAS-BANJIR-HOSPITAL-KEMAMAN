@@ -68,14 +68,17 @@
       <!-- MODUL DASHBOARD STANDARD BILIK GERAKAN BENCANA DAERAH -->
       <section id="modul-dashboard" class="tab-content space-y-6">
         
-        <!-- TAJUK & STATUS MASA NYATA -->
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center bg-white p-4 rounded-xl border border-slate-200 shadow-sm gap-2">
+        <!-- TAJUK, STATUS MASA NYATA & BUTANG REFRESH -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center bg-white p-4 rounded-xl border border-slate-200 shadow-sm gap-3">
           <div>
             <h2 class="text-lg font-bold text-kkm-navy">DASHBOARD PEMANTAUAN BENCANA BANJIR DAERAH</h2>
             <p class="text-xs text-slate-500">Kedudukan Sumber Manusia & Kesiapsiagaan Sektor Hospital Kemaman</p>
           </div>
-          <div class="text-right text-xs">
-            <span id="lastUpdatedTag" class="bg-slate-100 px-3 py-1 rounded font-mono border">Kemaskini: -</span>
+          <div class="flex items-center space-x-2 text-xs self-end md:self-auto">
+            <span id="lastUpdatedTag" class="bg-slate-100 px-3 py-1.5 rounded font-mono border text-slate-700">Kemaskini: -</span>
+            <button onclick="loadDashboard()" id="btnRefreshDash" class="bg-kkm-blue hover:bg-blue-800 text-white font-semibold px-3 py-1.5 rounded shadow-sm flex items-center transition">
+              <i id="iconRefreshDash" class="fa-solid fa-arrows-rotate mr-1.5"></i> Segarkan
+            </button>
           </div>
         </div>
 
@@ -294,9 +297,16 @@
 
       <!-- MODUL SENARAI LAPORAN -->
       <section id="modul-senarai" class="tab-content hidden space-y-4">
-        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex justify-between items-center">
-          <input type="text" id="searchReport" onkeyup="renderReportTable()" placeholder="Cari Nama / Telefon / Tempat Bertugas..." class="p-2 border rounded text-xs w-64">
-          <button onclick="exportCSV()" class="bg-kkm-green text-white px-3 py-2 rounded text-xs font-semibold hover:bg-green-700">Eksport CSV</button>
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row justify-between items-center gap-3">
+          <input type="text" id="searchReport" onkeyup="renderReportTable()" placeholder="Cari Nama / Telefon / Tempat Bertugas..." class="p-2 border rounded text-xs w-full md:w-64">
+          <div class="flex items-center space-x-2 w-full md:w-auto justify-end">
+            <button onclick="loadReportData()" id="btnRefreshList" class="bg-kkm-blue hover:bg-blue-800 text-white px-3 py-2 rounded text-xs font-semibold flex items-center transition">
+              <i id="iconRefreshList" class="fa-solid fa-arrows-rotate mr-1.5"></i> Segarkan
+            </button>
+            <button onclick="exportCSV()" class="bg-kkm-green text-white px-3 py-2 rounded text-xs font-semibold hover:bg-green-700 transition">
+              <i class="fa-solid fa-file-csv mr-1"></i> Eksport CSV
+            </button>
+          </div>
         </div>
         <div class="bg-white rounded-xl border shadow-sm p-4 overflow-x-auto">
           <table class="w-full text-xs text-left">
@@ -324,7 +334,7 @@
     // --------------------------------------------------------------------------------
     // TAMPAL URL WEB APP GOOGLE APPS SCRIPT ANDA DI SINI
     // --------------------------------------------------------------------------------
-    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbwpvPAQU7LlZhd0nLBEcaHbsxKmTNMxth9YNS69QCU_F4uyJ042SbPFXhLEyFB1fhrr/exec";
+    const API_URL = "https://script.google.com/a/macros/mo.gov.my/s/AKfycbwpvPAQU7LlZhd0nLBEcaHbsxKmTNMxth9YNS69QCU_F4uyJ042SbPFXhLEyFB1fhrr/exec";
 
     let globalReports = [];
     let adminPinSemasa = "";
@@ -385,6 +395,11 @@
     }
 
     function loadDashboard() {
+      const btn = document.getElementById('btnRefreshDash');
+      const icon = document.getElementById('iconRefreshDash');
+      if (btn) btn.disabled = true;
+      if (icon) icon.classList.add('fa-spin');
+
       fetch(`${API_URL}?action=getDashboard`)
         .then(res => res.json())
         .then(data => {
@@ -427,6 +442,11 @@
               <td class="p-2">${r.Keupayaan_Bertugas}</td>
             </tr>
           `).join('') || '<tr><td colspan="5" class="p-2 text-center">Tiada rekod.</td></tr>';
+        })
+        .catch(err => console.error("Ralat memuatkan dashboard:", err))
+        .finally(() => {
+          if (btn) btn.disabled = false;
+          if (icon) icon.classList.remove('fa-spin');
         });
     }
 
@@ -471,11 +491,21 @@
     }
 
     function loadReportData() {
+      const btn = document.getElementById('btnRefreshList');
+      const icon = document.getElementById('iconRefreshList');
+      if (btn) btn.disabled = true;
+      if (icon) icon.classList.add('fa-spin');
+
       fetch(`${API_URL}?action=getReports`)
         .then(res => res.json())
         .then(data => {
           globalReports = data;
           renderReportTable();
+        })
+        .catch(err => console.error("Ralat memuatkan senarai laporan:", err))
+        .finally(() => {
+          if (btn) btn.disabled = false;
+          if (icon) icon.classList.remove('fa-spin');
         });
     }
 
